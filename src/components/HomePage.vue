@@ -2,6 +2,7 @@
   <div class="home-container">
     <div class="background-animation"></div>
     <main class="main-content">
+      
       <div class="banner">
         <h2>Sản phẩm nổi bật ✨</h2>
         <div class="products">
@@ -35,10 +36,9 @@ export default {
       featuredProducts: [
         {
           id: 1,
-          name: "Bút Bi ",
+          name: "Bút Bi",
           price: "25.000",
-          image: require("@/img/butbi.png")
-
+          image: require("@/img/butbi.png"),
         },
         {
           id: 2,
@@ -57,19 +57,19 @@ export default {
   },
   methods: {
     addToCart(product) {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const existing = cart.find((item) => item.id === product.id);
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existing = cart.find((item) => item.id === product.id);
 
-  if (existing) {
-    existing.quantity++;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-  alert(`Đã thêm "${product.name}" vào giỏ hàng! 🎉`);
-}
-
+      localStorage.setItem("cart", JSON.stringify(cart));
+      window.dispatchEvent(new Event("storage")); // Thông báo App.vue cập nhật
+      alert(`Đã thêm "${product.name}" vào giỏ hàng! 🎉`);
+    },
   },
 };
 </script>
@@ -83,14 +83,6 @@ export default {
 
 :root {
   color-scheme: light;
-}
-
-.container {
-  font-family: "Segoe UI", sans-serif;
-  min-height: 100vh;
-  display: block;
-  position: relative;
-  overflow-x: hidden;
 }
 
 .main-content {

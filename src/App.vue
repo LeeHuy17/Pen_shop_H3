@@ -6,9 +6,16 @@
         <router-link to="/">Trang chủ</router-link>
         <router-link to="/login">Đăng nhập</router-link>
         <router-link to="/register">Đăng ký</router-link>
-        <router-link to="/cart">Giỏ hàng</router-link>
+        <router-link to="/cart">
+          🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
+        </router-link>
       </nav>
     </header>
+
+    <!-- 🖼 Ảnh hiển thị ngay dưới thanh header -->
+    <div class="banner-image">
+      <img src="@/assets/ht.png" alt="Banner dưới header" />
+    </div>
 
     <main class="main-view">
       <router-view />
@@ -22,8 +29,26 @@
 
 <script>
 export default {
-  name: 'App'
-}
+  name: 'App',
+  data() {
+    return {
+      cartCount: 0
+    };
+  },
+  created() {
+    this.updateCartCount();
+    window.addEventListener("storage", this.updateCartCount);
+  },
+  beforeUnmount() {
+    window.removeEventListener("storage", this.updateCartCount);
+  },
+  methods: {
+    updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      this.cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+    }
+  }
+};
 </script>
 
 <style>
@@ -35,24 +60,22 @@ export default {
 }
 
 .header {
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: #1c1c1c;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
   font-size: 20px;
-  color: #007bff;
   font-weight: bold;
 }
 
 .nav a {
   margin-left: 20px;
   text-decoration: none;
-  color: #333;
+  color: white;
   font-weight: 500;
   font-size: 14px;
 }
@@ -61,9 +84,26 @@ export default {
   color: #007bff;
 }
 
+.cart-count {
+  color: red;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.banner-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 300px;
+  object-fit: cover;
+  border-bottom: 2px solid #333;
+}
+
 .main-view {
   flex: 1;
   padding: 20px;
+  background-color: #0f1a17;
+  color: white;
 }
 
 .footer {
