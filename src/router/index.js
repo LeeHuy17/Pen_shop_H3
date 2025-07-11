@@ -4,6 +4,7 @@ import loginForm from '../components/loginForm.vue'
 import registerForm from '../components/reGin.vue'
 import CartPage from '../components/CartPage.vue'
 import productDetail from '@/components/productDetail.vue'
+import adMin from '@/components/adMin.vue'
 
 const routes = [
   {
@@ -30,6 +31,12 @@ const routes = [
     path: '/product/:id',
     name: 'productDetail',
     component: productDetail,
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: adMin
+    
   }
 ]
 
