@@ -2,14 +2,13 @@
   <div class="home-container">
     <div class="background-animation"></div>
     <main class="main-content">
-      
       <div class="banner">
         <h2>Sản phẩm nổi bật ✨</h2>
         <div class="products">
           <div
-            class="product-card"
             v-for="product in featuredProducts"
             :key="product.id"
+            class="product-card"
           >
             <img
               :src="product.image"
@@ -18,8 +17,11 @@
             />
             <h3 class="product-name">{{ product.name }}</h3>
             <p class="product-price">{{ product.price }}₫</p>
-            <button class="add-to-cart-btn" @click="addToCart(product)">
-              🛒 Thêm vào giỏ
+            <button
+              class="add-to-cart-btn"
+              @click.stop="goToProduct(product.id)"
+            >
+              🔍 Xem chi tiết
             </button>
           </div>
         </div>
@@ -56,19 +58,8 @@ export default {
     };
   },
   methods: {
-    addToCart(product) {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const existing = cart.find((item) => item.id === product.id);
-
-      if (existing) {
-        existing.quantity++;
-      } else {
-        cart.push({ ...product, quantity: 1 });
-      }
-
-      localStorage.setItem("cart", JSON.stringify(cart));
-      window.dispatchEvent(new Event("storage")); // Thông báo App.vue cập nhật
-      alert(`Đã thêm "${product.name}" vào giỏ hàng! 🎉`);
+    goToProduct(id) {
+      this.$router.push(`/product/${id}`);
     },
   },
 };

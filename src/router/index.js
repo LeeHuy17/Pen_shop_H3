@@ -3,6 +3,7 @@ import HomePage from '../components/HomePage.vue'
 import loginForm from '../components/loginForm.vue'
 import registerForm from '../components/reGin.vue'
 import CartPage from '../components/CartPage.vue'
+import productDetail from '@/components/productDetail.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/cart',
     name: 'cart',
     component: CartPage
+  },
+  {
+    path: '/product/:id',
+    name: 'productDetail',
+    component: productDetail,
   }
 ]
 

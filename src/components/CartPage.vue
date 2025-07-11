@@ -10,21 +10,22 @@
       <div v-else class="cart-items">
         <div
           class="cart-item"
-          v-for="item in cart"
-          :key="item.id"
+          v-for="(item, index) in cart"
+          :key="`${item.id}-${item.color}`"
         >
           <img :src="item.image" alt="Ảnh sản phẩm" />
           <div class="details">
             <h3>{{ item.name }}</h3>
             <p>Giá: {{ item.price }}₫</p>
+            <p>Màu: {{ item.color }}</p>
 
             <div class="quantity-control">
-              <button @click="decreaseQuantity(item)">-</button>
+              <button @click="decreaseQuantity(index)">-</button>
               <span>{{ item.quantity }}</span>
-              <button @click="increaseQuantity(item)">+</button>
+              <button @click="increaseQuantity(index)">+</button>
             </div>
 
-            <button @click="removeFromCart(item.id)">❌ Xóa</button>
+            <button @click="removeFromCart(index)">❌ Xóa</button>
           </div>
         </div>
 
@@ -58,25 +59,26 @@ export default {
     }
   },
   methods: {
-    removeFromCart(id) {
-      this.cart = this.cart.filter((item) => item.id !== id);
+    removeFromCart(index) {
+      this.cart.splice(index, 1);
       localStorage.setItem("cart", JSON.stringify(this.cart));
     },
-    increaseQuantity(item) {
-      item.quantity++;
+    increaseQuantity(index) {
+      this.cart[index].quantity++;
       localStorage.setItem("cart", JSON.stringify(this.cart));
     },
-    decreaseQuantity(item) {
-      if (item.quantity > 1) {
-        item.quantity--;
+    decreaseQuantity(index) {
+      if (this.cart[index].quantity > 1) {
+        this.cart[index].quantity--;
       } else {
-        this.removeFromCart(item.id);
+        this.removeFromCart(index);
       }
       localStorage.setItem("cart", JSON.stringify(this.cart));
     },
   },
 };
 </script>
+
 
 <style scoped>
 .cart-container {

@@ -3,10 +3,10 @@
     <header class="header">
       <img alt="Pen logo" class="logo" src="@/assets/pen-logo.webp" width="50" height="50" />
       <nav class="nav">
-        <router-link to="/">Trang chủ</router-link>
-        <router-link to="/login">Đăng nhập</router-link>
-        <router-link to="/register">Đăng ký</router-link>
-        <router-link to="/cart">
+        
+      <router-link to="/login">🔐 Đăng nhập</router-link>
+      <router-link to="/register">📝 Đăng ký</router-link>
+      <router-link to="/cart">
           🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
         </router-link>
       </nav>
