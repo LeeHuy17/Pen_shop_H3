@@ -41,7 +41,7 @@ const handleRegister = () => {
 .khungnendong {
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(-45deg, #117958, #fad0c4, #cc1297, #a18cd1);
+  background: linear-gradient(-45deg, #117958, #fad0c4, #d87bbe, #a18cd1);
   background-size: 400% 400%;
   animation: gradientMove 15s ease infinite;
   display: flex;

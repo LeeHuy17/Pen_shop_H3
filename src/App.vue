@@ -1,20 +1,22 @@
 <template>
   <div class="app-container">
     <header class="header">
-      <img alt="Pen logo" class="logo" src="@/assets/pen-logo.webp" width="50" height="50" />
+      <router-link to="/" class="logo-link">
+        <img alt="Pen logo" class="logo" src="@/assets/pen-logo.webp" width="50" height="50" />
+      </router-link>
+
       <nav class="nav">
         
-      <router-link to="/login">🔐 Đăng nhập</router-link>
-      <router-link to="/register">📝 Đăng ký</router-link>
+      <router-link to="/login">Đăng nhập</router-link>
+      <router-link to="/register">Đăng ký</router-link>
       <router-link to="/cart">
           🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
         </router-link>
       </nav>
     </header>
 
-    <!-- 🖼 Ảnh hiển thị ngay dưới thanh header -->
     <div class="banner-image">
-      <img src="@/assets/ht.png" alt="Banner dưới header" />
+      <img src="@/assets/backgroundPen2.jpg" alt="Banner dưới header" />
     </div>
 
     <main class="main-view">
@@ -22,7 +24,7 @@
     </main>
 
     <footer class="footer">
-      © 2025 Bút Store. All rights reserved.
+      © 2025 Pen Store. All rights reserved.
     </footer>
   </div>
 </template>
@@ -53,18 +55,20 @@ export default {
 
 <style>
 .app-container {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Segoe UI', Roboto, Avenir, Helvetica, sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: #fefeff;
 }
 
 .header {
-  background-color: #1c1c1c;
+  background-color: #8c808e; 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 12px 24px;
+  box-shadow: 0 4px 10px rgba(52, 47, 47, 0);
 }
 
 .logo {
@@ -75,17 +79,18 @@ export default {
 .nav a {
   margin-left: 20px;
   text-decoration: none;
-  color: white;
-  font-weight: 500;
-  font-size: 14px;
+  color: #1f1f21; 
+  font-weight: 600;
+  font-size: 15px;
+  transition: color 0.2s ease;
 }
 
 .nav a:hover {
-  color: #007bff;
+  color: #ffffff; 
 }
 
 .cart-count {
-  color: red;
+  color: #ffffff; 
   font-weight: bold;
   margin-left: 5px;
 }
@@ -94,23 +99,25 @@ export default {
   width: 100%;
   height: auto;
   display: block;
-  max-height: 300px;
+  max-height: 320px;
   object-fit: cover;
-  border-bottom: 2px solid #333;
+  border-bottom: 4px solid #f3d9fa;
 }
 
 .main-view {
   flex: 1;
-  padding: 20px;
-  background-color: #0f1a17;
-  color: white;
+  padding: 24px;
+  background-color: #e6f7f1;
+  color: #2d2d2d;
 }
 
 .footer {
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: #8c808e; 
+  color: #ffffff;
   text-align: center;
   padding: 16px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #8c808e;
+  font-size: 14px;
+  box-shadow: #3d3c3c;
 }
 </style>

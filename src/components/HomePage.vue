@@ -3,7 +3,7 @@
     <div class="background-animation"></div>
     <main class="main-content">
       <div class="banner">
-        <h2>Sản phẩm nổi bật ✨</h2>
+        <h2>Sản phẩm nổi bật</h2>
         <div class="products">
           <div
             v-for="product in featuredProducts"
@@ -21,7 +21,7 @@
               class="add-to-cart-btn"
               @click.stop="goToProduct(product.id)"
             >
-              🔍 Xem chi tiết
+              Xem chi tiết
             </button>
           </div>
         </div>
@@ -38,21 +38,21 @@ export default {
       featuredProducts: [
         {
           id: 1,
-          name: "Bút Bi",
-          price: "25.000",
-          image: require("@/img/butbi.png"),
+          name: "Bút Bi Thiên Long",
+          price: "7.000",
+          image: require("@/img/pen1.png"),
         },
         {
           id: 2,
-          name: "Bút Máy Sang Trọng",
-          price: "120.000",
-          image: "/images/pen2.jpg",
+          name: "Bút Lông Sakura",
+          price: "36.000",
+          image: require("@/img/pen2.webp"),
         },
         {
           id: 3,
-          name: "Bút Gel Mực Mịn",
-          price: "18.000",
-          image: "/images/pen3.jpg",
+          name: "Bút Máy Hero",
+          price: "210.000",
+          image: require("@/img/pen3.jpg"),
         },
       ],
     };
@@ -86,19 +86,26 @@ export default {
 }
 
 .banner {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: #fef6fb; 
   padding: 40px;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 24px rgba(255, 192, 203, 0.15);
+  border: 1px solid #fbd5e5;
+  transition: background-color 0.3s ease;
+}
+
+.banner:hover {
+  background-color: #fff0f7; 
 }
 
 .banner h2 {
   font-size: 32px;
   margin-bottom: 30px;
-  color: #333;
+  color: #7b2cbf; 
+  font-weight: 600;
+  text-shadow: 1px 1px 0 #fefefe;
 }
-
 .products {
   display: flex;
   justify-content: center;
@@ -108,17 +115,18 @@ export default {
 }
 
 .product-card {
-  background-color: #fff;
-  border-radius: 10px;
+  background-color: #ffffff;
+  border-radius: 14px;
   padding: 20px;
   width: 220px;
   text-align: center;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .product-image {
@@ -131,28 +139,29 @@ export default {
 .product-name {
   font-size: 18px;
   margin-bottom: 8px;
-  color: #333;
+  color: #1a1a1a;
 }
 
 .product-price {
   font-size: 16px;
-  color: #007bff;
+  color: #2b7a78;
+  font-weight: bold;
   margin-bottom: 12px;
 }
 
 .add-to-cart-btn {
   padding: 10px 16px;
-  background-color: #007bff;
+  background-color: #3fada8;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .add-to-cart-btn:hover {
-  background-color: #0056b3;
+  background-color: #347d78;
 }
 
 .background-animation {
@@ -161,11 +170,11 @@ export default {
   left: 0;
   width: 200%;
   height: 200%;
-  background: linear-gradient(-45deg, #b2e0ff, #ffe6f0, #d2ffea, #f9e6ff);
+  background: linear-gradient(-45deg, #dff6ff, #ffe6e6, #e4ffe3, #f4e8ff);
   background-size: 400% 400%;
-  animation: moveBg 15s ease infinite;
+  animation: moveBg 20s ease infinite;
   z-index: -1;
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 @keyframes moveBg {
