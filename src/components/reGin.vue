@@ -16,18 +16,39 @@
 
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const email = ref('')
+const router = useRouter()
 
-const handleRegister = () => {
+const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
-    alert('Mật khẩu không khớp!')
+    alert('❌ Mật khẩu không khớp!')
     return
   }
-  alert(`Đăng ký với: ${username.value}, ${email.value}`)
+
+  try {
+    const response = await axios.post('http://localhost:8080/user/register', {
+      username: username.value,
+      password: password.value,
+      email: email.value
+    })
+
+    if (response.data && response.data.status === 'success') {
+      alert('✅ Đăng ký thành công!')
+      localStorage.setItem('token', response.data.data.token)
+      router.push('/login')
+    } else {
+      alert('❌ Đăng ký thất bại!')
+    }
+  } catch (error) {
+    console.error('Lỗi đăng ký:', error)
+    alert('❌ Lỗi kết nối hoặc tài khoản đã tồn tại!')
+  }
 }
 </script>
 

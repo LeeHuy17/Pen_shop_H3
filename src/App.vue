@@ -1,17 +1,39 @@
 <template>
   <div class="app-container">
     <header class="header">
+      <!-- Logo bên trái -->
       <router-link to="/" class="logo-link">
         <img alt="Pen logo" class="logo" src="@/assets/pen-logo.webp" width="50" height="50" />
       </router-link>
 
+      <!-- Thanh tìm kiếm giữa -->
+      <div class="search-bar">
+        <input
+          v-model="searchQuery"
+          @keyup.enter="handleSearch"
+          class="search-input"
+          placeholder="🔍 Tìm kiếm sản phẩm..."
+        />
+        <button @click="handleSearch" class="search-button">Tìm</button>
+      </div>
+
+      <!-- Điều hướng bên phải -->
       <nav class="nav">
-        
-      <router-link to="/login">Đăng nhập</router-link>
-      <router-link to="/register">Đăng ký</router-link>
-      <router-link to="/cart">
-          🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
-        </router-link>
+        <template v-if="isLoggedIn">
+          <span class="welcome">👋 Xin chào, {{ username }}</span>
+          <router-link to="/cart">
+            🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
+          </router-link>
+          <a href="#" @click.prevent="logout" class="logout-link">🚪 Đăng xuất</a>
+        </template>
+
+        <template v-else>
+          <router-link to="/login">Đăng nhập</router-link>
+          <router-link to="/register">Đăng ký</router-link>
+          <router-link to="/cart">
+            🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
+          </router-link>
+        </template>
       </nav>
     </header>
 
@@ -34,22 +56,84 @@ export default {
   name: 'App',
   data() {
     return {
-      cartCount: 0
+      cartCount: 0,
+      username: '',
+      isLoggedIn: false,
+      searchQuery: '', // 👈 Thêm dòng này
     };
   },
   created() {
-    this.updateCartCount();
-    window.addEventListener("storage", this.updateCartCount);
+    this.loadCartCount();
+    this.checkLogin();
+    window.addEventListener('storage', this.syncFromStorage);
+    window.addEventListener('user-logged-in', this.handleUserLogin);
   },
   beforeUnmount() {
-    window.removeEventListener("storage", this.updateCartCount);
+    window.removeEventListener('storage', this.syncFromStorage);
+    window.removeEventListener('user-logged-in', this.handleUserLogin);
   },
   methods: {
-    updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    syncFromStorage() {
+      this.loadCartCount();
+      this.checkLogin();
+    },
+    handleUserLogin() {
+      this.checkLogin();
+      this.loadCartCount();
+    },
+    loadCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
       this.cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-    }
-  }
+    },
+    async checkLogin() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.isLoggedIn = false;
+        this.username = '';
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8080/auth/introspect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+
+        const data = await response.json();
+        if (response.ok && data.status === 'success') {
+          const userDetails = data.data.details;
+          this.username = userDetails.username || localStorage.getItem('username') || 'Người dùng';
+          this.isLoggedIn = true;
+        } else {
+          this.isLoggedIn = false;
+          this.username = '';
+          localStorage.removeItem('token');
+        }
+      } catch (error) {
+        console.error('Lỗi introspect:', error);
+        this.isLoggedIn = false;
+        this.username = '';
+        localStorage.removeItem('token');
+      }
+    },
+    logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('role');
+      this.username = '';
+      this.isLoggedIn = false;
+      this.cartCount = 0;
+      this.$router.push('/login');
+    },
+    handleSearch() {
+      if (this.searchQuery.trim()) {
+        console.log('Tìm kiếm:', this.searchQuery);
+        alert(`🔍 Bạn vừa tìm: ${this.searchQuery}`);
+        this.searchQuery = '';
+      }
+    },
+  },
 };
 </script>
 
@@ -63,12 +147,13 @@ export default {
 }
 
 .header {
-  background-color: #8c808e; 
+  background-color: #8c808e;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-  box-shadow: 0 4px 10px rgba(52, 47, 47, 0);
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .logo {
@@ -76,23 +161,71 @@ export default {
   font-weight: bold;
 }
 
-.nav a {
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.search-input {
+  padding: 6px 12px;
+  border-radius: 6px 0 0 6px;
+  border: none;
+  font-size: 14px;
+  width: 250px;
+}
+
+.search-button {
+  padding: 6px 16px;
+  background-color: #ffefff;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #fcdffb;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.nav a,
+.nav span {
   margin-left: 20px;
   text-decoration: none;
-  color: #1f1f21; 
+  color: #1f1f21;
   font-weight: 600;
   font-size: 15px;
   transition: color 0.2s ease;
 }
 
 .nav a:hover {
-  color: #ffffff; 
+  color: #ffffff;
 }
 
 .cart-count {
-  color: #ffffff; 
+  color: #ffffff;
   font-weight: bold;
   margin-left: 5px;
+}
+
+.logout-link {
+  cursor: pointer;
+  color: #ffddcc;
+  font-weight: 600;
+}
+
+.logout-link:hover {
+  color: red;
+}
+
+.welcome {
+  color: #ffffff;
 }
 
 .banner-image img {
@@ -112,12 +245,11 @@ export default {
 }
 
 .footer {
-  background-color: #8c808e; 
+  background-color: #8c808e;
   color: #ffffff;
   text-align: center;
   padding: 16px;
   border-top: 1px solid #8c808e;
   font-size: 14px;
-  box-shadow: #3d3c3c;
 }
 </style>

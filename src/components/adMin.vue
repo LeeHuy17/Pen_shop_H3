@@ -1,25 +1,31 @@
 <template>
   <div class="admin-container">
-    <h1>🛠 Admin quản lý sản phẩm </h1>
+    <h1>🛠 Admin quản lý sản phẩm (Bút)</h1>
 
-   
+    <!-- Form thêm sản phẩm -->
     <form @submit.prevent="onSubmit" class="admin-form">
       <input v-model="form.name" placeholder="Tên sản phẩm" required />
-      <input v-model="form.price" placeholder="Giá (đ)" required />
+      <input v-model.number="form.price" placeholder="Giá (đ)" required />
       <input v-model="form.image" placeholder="Link ảnh" required />
       <button type="submit">{{ isEditing ? "Lưu chỉnh sửa" : "Thêm sản phẩm" }}</button>
     </form>
 
-   
+    <!-- Form thêm brand -->
+    <form @submit.prevent="onAddBrand" class="admin-form">
+      <input v-model="brandName" placeholder="Tên thương hiệu mới" required />
+      <button type="submit">➕ Thêm thương hiệu</button>
+    </form>
+
+    <!-- Danh sách sản phẩm -->
     <div class="product-list">
-      <div v-for="(product, index) in products" :key="index" class="product-item">
-        <img :src="product.image" alt="Ảnh" />
+      <div v-for="product in products" :key="product.id" class="product-item">
+        <img :src="product.image" alt="Ảnh sản phẩm" />
         <div class="info">
           <h3>{{ product.name }}</h3>
           <p>{{ product.price }}₫</p>
           <div class="actions">
-            <button @click="editProduct(index)">✏️</button>
-            <button @click="deleteProduct(index)">🗑️</button>
+            <button @click="editProduct(product)">✏️</button>
+            <button @click="deleteProduct(product.id)">🗑️</button>
           </div>
         </div>
       </div>
@@ -32,40 +38,109 @@ export default {
   name: "AdminPage",
   data() {
     return {
-      products: JSON.parse(localStorage.getItem("adminProducts")) || [],
-      form: { name: "", price: "", image: "" },
+      products: [],
+      form: {
+        name: "",
+        price: 0,
+        image: ""
+      },
+      brandName: "",
       isEditing: false,
-      editIndex: null,
+      editId: null
     };
   },
+  mounted() {
+    this.fetchProducts();
+  },
   methods: {
-    onSubmit() {
-      if (this.isEditing) {
-        this.products[this.editIndex] = { ...this.form };
-      } else {
-        this.products.push({ ...this.form });
+    getToken() {
+      return localStorage.getItem("access_token");
+    },
+    async fetchProducts() {
+      try {
+        const response = await fetch("http://localhost:8080/pen/admin/get-list", {
+          headers: {
+            "Authorization": `Bearer ${this.getToken()}`
+          }
+        });
+        const data = await response.json();
+        this.products = data.pen || [];
+      } catch (err) {
+        console.error("Lỗi lấy sản phẩm:", err);
       }
-      this.saveProducts();
-      this.resetForm();
     },
-    editProduct(index) {
-      this.form = { ...this.products[index] };
+    async onSubmit() {
+      const url = this.isEditing
+        ? `http://localhost:8080/pen/update-pen/${this.editId}`
+        : "http://localhost:8080/pen/add-pen";
+      const method = this.isEditing ? "PATCH" : "POST";
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${this.getToken()}`
+          },
+          body: JSON.stringify(this.form)
+        });
+
+        if (!response.ok) throw new Error("Lỗi gửi dữ liệu");
+
+        await this.fetchProducts();
+        this.resetForm();
+      } catch (err) {
+        console.error("Lỗi thêm/sửa sản phẩm:", err);
+      }
+    },
+    editProduct(product) {
+      this.form = { ...product };
+      this.editId = product.id;
       this.isEditing = true;
-      this.editIndex = index;
     },
-    deleteProduct(index) {
-      this.products.splice(index, 1);
-      this.saveProducts();
-    },
-    saveProducts() {
-      localStorage.setItem("adminProducts", JSON.stringify(this.products));
+    async deleteProduct(penId) {
+      if (!confirm("Bạn có chắc muốn xoá sản phẩm này?")) return;
+
+      try {
+        const response = await fetch(`http://localhost:8080/pen/delete/${penId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${this.getToken()}`
+          }
+        });
+
+        if (!response.ok) throw new Error("Lỗi khi xóa sản phẩm");
+        await this.fetchProducts();
+      } catch (err) {
+        console.error("Lỗi xoá sản phẩm:", err);
+      }
     },
     resetForm() {
-      this.form = { name: "", price: "", image: "" };
+      this.form = { name: "", price: 0, image: "" };
       this.isEditing = false;
-      this.editIndex = null;
+      this.editId = null;
     },
-  },
+    async onAddBrand() {
+      try {
+        const response = await fetch("http://localhost:8080/brand/add-brand", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${this.getToken()}`
+          },
+          body: JSON.stringify({ name: this.brandName })
+        });
+
+        if (!response.ok) throw new Error("Thêm brand thất bại");
+
+        alert("✅ Thêm thương hiệu thành công!");
+        this.brandName = "";
+      } catch (err) {
+        console.error("Lỗi thêm brand:", err);
+        alert("❌ Không thể thêm thương hiệu");
+      }
+    }
+  }
 };
 </script>
 
@@ -100,7 +175,7 @@ h1 {
 
 .admin-form button {
   padding: 10px 16px;
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   border: none;
   border-radius: 6px;
