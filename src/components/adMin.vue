@@ -1,31 +1,33 @@
 <template>
   <div class="admin-container">
-    <h1>🛠 Admin quản lý sản phẩm (Bút)</h1>
+    <h1>🛠 Quản lý sản phẩm</h1>
 
-    <!-- Form thêm sản phẩm -->
     <form @submit.prevent="onSubmit" class="admin-form">
       <input v-model="form.name" placeholder="Tên sản phẩm" required />
-      <input v-model.number="form.price" placeholder="Giá (đ)" required />
-      <input v-model="form.image" placeholder="Link ảnh" required />
+      <input v-model="form.brand_id" placeholder="ID thương hiệu" required />
+      <input v-model="form.category_id" placeholder="ID danh mục" required />
+      <input v-model="form.image" placeholder="Link ảnh sản phẩm" required />
       <button type="submit">{{ isEditing ? "Lưu chỉnh sửa" : "Thêm sản phẩm" }}</button>
     </form>
 
-    <!-- Form thêm brand -->
     <form @submit.prevent="onAddBrand" class="admin-form">
       <input v-model="brandName" placeholder="Tên thương hiệu mới" required />
-      <button type="submit">➕ Thêm thương hiệu</button>
+      <button type="submit">Thêm thương hiệu</button>
     </form>
 
-    <!-- Danh sách sản phẩm -->
+    <h2 class="shop-title">Sản phẩm hiện có</h2>
     <div class="product-list">
-      <div v-for="product in products" :key="product.id" class="product-item">
+      <div v-for="product in products" :key="product.pen_id" class="product-item">
         <img :src="product.image" alt="Ảnh sản phẩm" />
         <div class="info">
           <h3>{{ product.name }}</h3>
-          <p>{{ product.price }}₫</p>
+          <p>ID thương hiệu: {{ product.brand_id }}</p>
+          <p>ID danh mục: {{ product.category_id }}</p>
+          <p>Trạng thái: {{ product.visible ? 'Hiện' : 'Ẩn' }}</p>
+          <p>Ngày tạo: {{ new Date(product.created_at).toLocaleString() }}</p>
           <div class="actions">
-            <button @click="editProduct(product)">✏️</button>
-            <button @click="deleteProduct(product.id)">🗑️</button>
+            <button @click="editProduct(product)">Chỉnh sửa</button>
+            <button @click="deleteProduct(product.pen_id)">Xóa</button>
           </div>
         </div>
       </div>
@@ -41,7 +43,8 @@ export default {
       products: [],
       form: {
         name: "",
-        price: 0,
+        brand_id: "",
+        category_id: "",
         image: ""
       },
       brandName: "",
@@ -94,8 +97,13 @@ export default {
       }
     },
     editProduct(product) {
-      this.form = { ...product };
-      this.editId = product.id;
+      this.form = {
+        name: product.name,
+        brand_id: product.brand_id,
+        category_id: product.category_id,
+        image: product.image
+      };
+      this.editId = product.pen_id;
       this.isEditing = true;
     },
     async deleteProduct(penId) {
@@ -116,7 +124,12 @@ export default {
       }
     },
     resetForm() {
-      this.form = { name: "", price: 0, image: "" };
+      this.form = {
+        name: "",
+        brand_id: "",
+        category_id: "",
+        image: ""
+      };
       this.isEditing = false;
       this.editId = null;
     },
@@ -146,77 +159,107 @@ export default {
 
 <style scoped>
 .admin-container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 60px auto;
   padding: 20px;
-  font-family: sans-serif;
-  background: #f7f7f7;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f2f2f2;
   border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  font-size: 28px;
+  color: #5c3d99;
+}
+
+.shop-title {
+  font-size: 22px;
+  color: #333;
+  margin: 40px 0 20px;
+  font-weight: bold;
 }
 
 .admin-form {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 30px;
 }
 
 .admin-form input {
-  flex: 1 1 200px;
-  padding: 10px;
+  flex: 1 1 220px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 16px;
 }
 
 .admin-form button {
-  padding: 10px 16px;
+  padding: 12px 18px;
   background-color: #28a745;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .product-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .product-item {
   display: flex;
-  gap: 15px;
+  gap: 20px;
   background: white;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 16px;
+  border-radius: 10px;
   align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .product-item img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 8px;
+  background: #f0f0f0;
 }
 
 .info {
   flex: 1;
+  font-size: 16px;
+}
+
+.info h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #2a2a2a;
 }
 
 .actions {
   display: flex;
   gap: 10px;
+  margin-top: 10px;
 }
 
 .actions button {
-  font-size: 18px;
-  background: none;
+  font-size: 16px;
+  background: #007bff;
+  color: white;
   border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.actions button:hover {
+  background: #0056b3;
 }
 </style>

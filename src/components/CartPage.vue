@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; justify-content: flex-start;">
     <div class="cart-container">
-      <h2>🛒 Giỏ Hàng Của Bạn</h2>
+      <h2>🛒Giỏ Hàng</h2>
 
       <div v-if="cart.length === 0" class="empty-cart">
         Giỏ hàng đang trống!

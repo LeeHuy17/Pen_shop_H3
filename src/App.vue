@@ -1,37 +1,48 @@
 <template>
   <div class="app-container">
     <header class="header">
-      <!-- Logo bên trái -->
       <router-link to="/" class="logo-link">
         <img alt="Pen logo" class="logo" src="@/assets/pen-logo.webp" width="50" height="50" />
       </router-link>
 
-      <!-- Thanh tìm kiếm giữa -->
       <div class="search-bar">
         <input
           v-model="searchQuery"
           @keyup.enter="handleSearch"
           class="search-input"
-          placeholder="🔍 Tìm kiếm sản phẩm..."
+          placeholder="Tìm kiếm sản phẩm..."
         />
-        <button @click="handleSearch" class="search-button">Tìm</button>
+        <button @click="handleSearch" class="search-button">
+          <img :src="require('@/assets/icons/search.png')" alt="Tìm kiếm" width="20" height="20" />
+        </button>
       </div>
-
-      <!-- Điều hướng bên phải -->
+      
       <nav class="nav">
         <template v-if="isLoggedIn">
-          <span class="welcome">👋 Xin chào, {{ username }}</span>
-          <router-link to="/cart">
-            🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
+          <span class="welcome">Xin chào, {{ username }} !</span>
+
+          <router-link to="/cart" class="icon-link" title="Giỏ hàng">
+            <img src="@/assets/icons/cart.png" alt="Giỏ hàng" width="28" height="28" />
+            <span class="cart-count" v-if="cartCount > 0">{{ cartCount }}</span>
           </router-link>
-          <a href="#" @click.prevent="logout" class="logout-link">🚪 Đăng xuất</a>
+
+          <a href="#" @click.prevent="logout" class="icon-link" title="Đăng xuất">
+            <img src="@/assets/icons/logout.png" alt="Đăng xuất" width="28" height="28" />
+          </a>
         </template>
 
         <template v-else>
-          <router-link to="/login">Đăng nhập</router-link>
-          <router-link to="/register">Đăng ký</router-link>
-          <router-link to="/cart">
-            🛒 Giỏ hàng <span class="cart-count" v-if="cartCount > 0">({{ cartCount }})</span>
+          <router-link to="/login" class="icon-link" title="Đăng nhập">
+            <img src="@/assets/icons/login.png" alt="Đăng nhập" width="28" height="28" />
+          </router-link>
+
+          <router-link to="/register" class="icon-link" title="Đăng ký">
+            <img src="@/assets/icons/register.png" alt="Đăng ký" width="28" height="28" />
+          </router-link>
+
+          <router-link to="/cart" class="icon-link" title="Giỏ hàng">
+            <img src="@/assets/icons/cart.png" alt="Giỏ hàng" width="28" height="28" />
+            <span class="cart-count" v-if="cartCount > 0">{{ cartCount }}</span>
           </router-link>
         </template>
       </nav>
@@ -51,6 +62,7 @@
   </div>
 </template>
 
+
 <script>
 export default {
   name: 'App',
@@ -59,7 +71,7 @@ export default {
       cartCount: 0,
       username: '',
       isLoggedIn: false,
-      searchQuery: '', // 👈 Thêm dòng này
+      searchQuery: '', 
     };
   },
   created() {
@@ -159,6 +171,7 @@ export default {
 .logo {
   font-size: 20px;
   font-weight: bold;
+  border-radius: 37%;
 }
 
 .search-bar {
@@ -166,28 +179,43 @@ export default {
   align-items: center;
   justify-content: center;
   flex: 1;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 10px;
+  background: #fff0fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(200, 100, 200, 0.15);
 }
 
 .search-input {
-  padding: 6px 12px;
-  border-radius: 6px 0 0 6px;
-  border: none;
-  font-size: 14px;
-  width: 250px;
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 12px 0 0 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #45e3c4;
 }
 
 .search-button {
-  padding: 6px 16px;
-  background-color: #ffefff;
+  padding: 10px 20px;
+  background-color: #5ee4ff;
   border: none;
-  border-radius: 0 6px 6px 0;
+  color: white;
   font-weight: bold;
+  border-radius: 0 12px 12px 0;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .search-button:hover {
-  background-color: #fcdffb;
+  background-color: #f0ba94;
 }
+
 
 .nav {
   display: flex;
@@ -251,5 +279,16 @@ export default {
   padding: 16px;
   border-top: 1px solid #8c808e;
   font-size: 14px;
+}
+
+.logout-link {
+  display: inline-block;
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.2s;
+}
+
+.logout-link:hover {
+  transform: scale(1.1);
 }
 </style>
